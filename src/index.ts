@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios'
 import abi from 'ethereumjs-abi'
-import * as Common from 'ethereumjs-common';
+import Common from 'ethereumjs-common';
 import { Transaction } from 'ethereumjs-tx'
 
 type BlockNumber = string | number;
@@ -9,6 +9,26 @@ class BurnWeb {
     private readonly axios: AxiosInstance;
 
     private readonly privateKey: Buffer;
+
+    private _customCommon: Common = null;
+
+    private async getCustomCommon(): Promise<Common> {
+        if (this._customCommon === null) {
+            const blockchain = (await this.axios.get('api/blockchain')).data
+
+            this._customCommon = Common.forCustomChain(
+                'mainnet',
+                {
+                    name: 'BURN',
+                    networkId: blockchain['chain_id'],
+                    chainId: blockchain['chain_id'],
+                },
+                'petersburg'
+            )
+        }
+
+        return this._customCommon
+    }
 
     constructor(url: string, privateKey: string | undefined) {
         this.axios = axios.create({
@@ -69,8 +89,6 @@ class BurnWeb {
         mintable: boolean,
         burnable: boolean
     ): Promise<string> {
-        const blockchain = (await this.axios.get('api/blockchain')).data;
-
         const data = abi.rawEncode(
             [ 'string', 'string', 'uint256', 'uint256', 'address', 'uint256', 'uint256', 'string', 'uint256', 'uint256' ],
             [ 
@@ -98,17 +116,7 @@ class BurnWeb {
             data: '0x78e2fc09' + data.toString('hex')
         }
 
-        const customCommon = Common.default.forCustomChain(
-            'mainnet',
-            {
-                name: 'BURN',
-                networkId: blockchain['chain_id'],
-                chainId: blockchain['chain_id'],
-            },
-            'petersburg'
-        )
-    
-        const tx = new Transaction(txParams, { common: customCommon })
+        const tx = new Transaction(txParams, { common: await this.getCustomCommon() })
   
         tx.sign(this.privateKey);
   
@@ -138,8 +146,6 @@ class BurnWeb {
         target: string,
         amount: number
     ): Promise<string> {
-        const blockchain = (await this.axios.get('api/blockchain')).data;
-
         const data = abi.rawEncode([ 'address', 'uint256' ], [ target, amount ])
         const nonce = Date.now();
 
@@ -152,17 +158,7 @@ class BurnWeb {
             data: '0xa9059cbb' + data.toString('hex')
         }
 
-        const customCommon = Common.default.forCustomChain(
-            'mainnet',
-            {
-                name: 'BURN',
-                networkId: blockchain['chain_id'],
-                chainId: blockchain['chain_id'],
-            },
-            'petersburg'
-        )
-    
-        const tx = new Transaction(txParams, { common: customCommon })
+        const tx = new Transaction(txParams, { common: await this.getCustomCommon() })
   
         tx.sign(this.privateKey);
   
