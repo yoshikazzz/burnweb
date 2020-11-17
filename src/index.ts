@@ -70,8 +70,20 @@ class BurnWeb {
         })
     }
 
+    getBalanceOf(tokenId: string, address: string): Promise<string> {
+        return this.axios.get('api/token/' + tokenId +'/balance/' + address).then((response) => {
+            return response.data['balance']
+        })
+    }
+
     getTransaction(transactionHash: string): Promise<object> {
         return this.axios.get('api/transactions/' + transactionHash).then((response) => {
+            return response.data
+        })
+    }
+
+    getToken(tokenId: string): Promise<object> {
+        return this.axios.get('api/token/' + tokenId).then((response) => {
             return response.data
         })
     }
@@ -166,6 +178,70 @@ class BurnWeb {
   
         return this.axios.post('api/token/' + tokenId + '/transfer', {
             'to': target,
+            'value': amount,
+            'nonce': nonce,
+            'signature': signature
+        }).then((response) => {
+            return response.data['tx_hash']
+        });
+    }
+
+    async issueToken(
+        tokenId: string,
+        target: string,
+        amount: number
+    ): Promise<string> {
+        const data = abi.rawEncode([ 'address', 'uint256' ], [ target, amount ])
+        const nonce = Date.now();
+
+        const txParams = {
+            nonce: '0x' + nonce.toString(16),
+            gasPrice: '0x0',
+            gasLimit: '0x0',
+            to: tokenId,
+            value: '0x0',
+            data: '0x40c10f19' + data.toString('hex')
+        }
+
+        const tx = new Transaction(txParams, { common: await this.getCustomCommon() })
+  
+        tx.sign(this.privateKey);
+  
+        const signature = tx.v.toString('hex') + tx.r.toString('hex') + tx.s.toString('hex');
+  
+        return this.axios.post('api/token/' + tokenId + '/issue', {
+            'to': target,
+            'value': amount,
+            'nonce': nonce,
+            'signature': signature
+        }).then((response) => {
+            return response.data['tx_hash']
+        });
+    }
+
+    async burnToken(
+        tokenId: string,
+        amount: number
+    ): Promise<string> {
+        const data = abi.rawEncode([ 'uint256' ], [ amount ])
+        const nonce = Date.now();
+
+        const txParams = {
+            nonce: '0x' + nonce.toString(16),
+            gasPrice: '0x0',
+            gasLimit: '0x0',
+            to: tokenId,
+            value: '0x0',
+            data: '0x42966c68' + data.toString('hex')
+        }
+
+        const tx = new Transaction(txParams, { common: await this.getCustomCommon() })
+  
+        tx.sign(this.privateKey);
+  
+        const signature = tx.v.toString('hex') + tx.r.toString('hex') + tx.s.toString('hex');
+  
+        return this.axios.post('api/token/' + tokenId + '/burn', {
             'value': amount,
             'nonce': nonce,
             'signature': signature
