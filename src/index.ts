@@ -2,6 +2,7 @@ import axios, { AxiosInstance } from 'axios'
 import abi from 'ethereumjs-abi'
 import Common from 'ethereumjs-common';
 import { Transaction } from 'ethereumjs-tx'
+import Wallet from 'ethereumjs-wallet';
 
 type BlockNumber = string | number;
 
@@ -89,7 +90,6 @@ class BurnWeb {
     }
 
     async createToken(
-        tokenId: string,
         name: string,
         symbol: string,
         decimals: number,
@@ -100,7 +100,7 @@ class BurnWeb {
         icon: string,
         mintable: boolean,
         burnable: boolean
-    ): Promise<string> {
+    ): Promise<{ txHash: string; tokenId: string }> {
         const data = abi.rawEncode(
             [ 'string', 'string', 'uint256', 'uint256', 'address', 'uint256', 'uint256', 'string', 'uint256', 'uint256' ],
             [ 
@@ -117,6 +117,7 @@ class BurnWeb {
             ]
         )
 
+        const tokenId = Wallet.generate().getAddressString();
         const nonce = Date.now();
 
         const txParams = {
@@ -149,7 +150,10 @@ class BurnWeb {
             "nonce": nonce,
             "signature": signature
         }).then((response) => {
-            return response.data['tx_hash']
+            return {
+                txHash: response.data['tx_hash'],
+                tokenId: tokenId
+            };
         });
     }
 

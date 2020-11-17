@@ -28,10 +28,7 @@ test('getBalance', async () => {
 test('getTransaction', async () => {
     const burnweb = new BurnWeb('https://burn-network.io', 'c4d25b4def6bdf58cdacfff3b03a0304a9f2aa29d1357b5ae0ad28c54102898b');
 
-    const token = Wallet.generate();
-
-    const txHash = await burnweb.createToken(
-        token.getAddressString(),
+    const { txHash } = await burnweb.createToken(
         'Name',
         'USDN',
         6,
