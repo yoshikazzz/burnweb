@@ -253,6 +253,124 @@ class BurnWeb {
             return response.data['tx_hash'];
         });
     }
+
+    async createStore(name: string): Promise<{ txHash: string; storeId: string }> {
+        const data = abi.rawEncode(
+            [ 'string', 'address', 'uint256' ],
+            [ name, '0x0000000000000000000000000000000000000000', '0' ]
+        );
+
+        const storeId = Wallet.generate().getAddressString();
+        const nonce = Date.now();
+
+        const txParams = {
+            nonce: '0x' + nonce.toString(16),
+            gasPrice: '0x0',
+            gasLimit: '0x0',
+            to: storeId,
+            value: '0x0',
+            data: '0x06dc8de5' + data.toString('hex')
+        };
+
+        const tx = new Transaction(txParams, { common: await this.getCustomCommon() });
+  
+        tx.sign(this.privateKey);
+  
+        const signature = tx.v.toString('hex') + tx.r.toString('hex') + tx.s.toString('hex');
+  
+        return this.axios.post('api/kvs/create', {
+            'store_id': storeId,
+            'name': name,
+            'fee_token_id': '0x0000000000000000000000000000000000000000',
+            'tx_fee': 0,
+            'nonce': nonce,
+            'signature': signature
+        }).then((response) => {
+            return {
+                txHash: response.data['tx_hash'],
+                storeId: storeId
+            };
+        });
+    }
+
+    async setKeyValue(storeId: string, collection: string, key: string, value: string): Promise<{ txHash: string }> {
+        const data = abi.rawEncode(
+            [ 'string', 'string', 'string' ],
+            [ collection, key, value ]
+        );
+
+        const nonce = Date.now();
+
+        const txParams = {
+            nonce: '0x' + nonce.toString(16),
+            gasPrice: '0x0',
+            gasLimit: '0x0',
+            to: storeId,
+            value: '0x0',
+            data: '0xc6be612d' + data.toString('hex')
+        };
+
+        const tx = new Transaction(txParams, { common: await this.getCustomCommon() });
+  
+        tx.sign(this.privateKey);
+  
+        const signature = tx.v.toString('hex') + tx.r.toString('hex') + tx.s.toString('hex');
+  
+        return this.axios.post('api/kvs/' + storeId + '/collections/' + collection, {
+            'store_id': storeId,
+            'key': key,
+            'value': value,
+            'nonce': nonce,
+            'signature': signature
+        }).then((response) => {
+            return {
+                txHash: response.data['tx_hash']
+            };
+        });
+    }
+
+    async getKeyValue(storeId: string, collection: string, key: string): Promise<string> {
+        return this.axios.get('api/kvs/' + storeId + '/collections/' + collection + '/keys/' + key + '/value').then((response) => {
+            return response.data['value'];
+        });
+    }
+
+    async deleteKeyValue(storeId: string, collection: string, key: string): Promise<{ txHash: string }> {
+        const data = abi.rawEncode(
+            [ 'string', 'string' ],
+            [ collection, key ]
+        );
+
+        const nonce = Date.now();
+
+        const txParams = {
+            nonce: '0x' + nonce.toString(16),
+            gasPrice: '0x0',
+            gasLimit: '0x0',
+            to: storeId,
+            value: '0x0',
+            data: '0x668f1f1b' + data.toString('hex')
+        };
+
+        const tx = new Transaction(txParams, { common: await this.getCustomCommon() });
+  
+        tx.sign(this.privateKey);
+  
+        const signature = tx.v.toString('hex') + tx.r.toString('hex') + tx.s.toString('hex');
+  
+        return this.axios.delete('api/kvs/' + storeId + '/collections/' + collection, {
+            data: {
+                'store_id': storeId,
+                'key': key,
+                'nonce': nonce,
+                'signature': signature
+            }
+        }).then((response) => {
+            return {
+                txHash: response.data['tx_hash']
+            };
+        });
+    }
 }
 
 export = BurnWeb
