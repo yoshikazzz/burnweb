@@ -21,5 +21,6 @@
     "ethereumjs-abi": "^0.6.8",
     "ethereumjs-common": "^1.5.2",
     "ethereumjs-tx": "^2.1.2"
-  }
+  },
+  "main": "dist/index.js"
 }
