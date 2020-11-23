@@ -30,4 +30,5 @@ declare class BurnWeb {
         txHash: string;
     }>;
 }
+export { BurnWeb };
 export default BurnWeb;
