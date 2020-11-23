@@ -372,5 +372,8 @@ class BurnWeb {
         });
     }
 }
+// For ts
+export default BurnWeb;
 
-export = BurnWeb
+// For js
+module.exports = BurnWeb;

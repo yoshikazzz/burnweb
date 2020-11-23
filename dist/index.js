@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
 const ethereumjs_abi_1 = __importDefault(require("ethereumjs-abi"));
 const ethereumjs_common_1 = __importDefault(require("ethereumjs-common"));
@@ -298,5 +299,8 @@ class BurnWeb {
         });
     }
 }
+// For ts
+exports.default = BurnWeb;
+// For js
 module.exports = BurnWeb;
 //# sourceMappingURL=index.js.map
