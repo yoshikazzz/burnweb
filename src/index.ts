@@ -14,10 +14,10 @@ class BurnWeb {
     private _customCommon: Common = null;
 
     private async getCustomCommon(): Promise<Common> {
-        if (this._customCommon === null) {
+        // if (this._customCommon === null) {
             const blockchain = (await this.axios.get('api/blockchain')).data;
 
-            this._customCommon = Common.forCustomChain(
+            return Common.forCustomChain(
                 'mainnet',
                 {
                     name: 'BURN',
@@ -26,9 +26,9 @@ class BurnWeb {
                 },
                 'petersburg'
             );
-        }
+        // }
 
-        return this._customCommon;
+        // return this._customCommon;
     }
 
     constructor(url: string, privateKey: string | undefined) {
