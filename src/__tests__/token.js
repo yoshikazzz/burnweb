@@ -15,8 +15,7 @@ test('createToken', async () => {
         0,
         'https://s3.aws.com/11980234/219315.png',
         1,
-        0,
-        1234
+        0
     );
 
     expect(txHash).toMatch(/^0x[0-9a-f]{40}/);
@@ -35,8 +34,7 @@ test('getToken', async () => {
         0,
         'https://s3.aws.com/11980234/219315.png',
         1,
-        0,
-        1234
+        0
     );
 
     const info =  await burnweb.getToken(tokenId);
@@ -57,8 +55,7 @@ test('transferToken', async () => {
         0,
         'https://s3.aws.com/11980234/219315.png',
         1,
-        0,
-        1234
+        0
     );
 
     const target = Wallet.generate();
@@ -81,8 +78,7 @@ test('issueToken', async () => {
         0,
         'https://s3.aws.com/11980234/219315.png',
         1,
-        0,
-        1234
+        0
     );
 
     const target = Wallet.generate();
@@ -109,8 +105,7 @@ test('burnToken', async () => {
         0,
         'https://s3.aws.com/11980234/219315.png',
         1,
-        1,
-        1234
+        1
     );
 
     const txHash =  await burnweb.burnToken(tokenId, 100);
@@ -135,8 +130,7 @@ test('getBalanceOf', async () => {
         0,
         'https://s3.aws.com/11980234/219315.png',
         1,
-        0,
-        1234
+        0
     );
 
     expect(await burnweb.getBalanceOf(tokenId, '0x3a762D996BBB3633c653e1DCb0201663874Dc9E2')).toEqual('20000000000000');
