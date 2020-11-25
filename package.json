@@ -12,7 +12,6 @@
     "@typescript-eslint/eslint-plugin": "^2.18.0",
     "@typescript-eslint/parser": "^2.18.0",
     "eslint": "^7.13.0",
-    "ethereumjs-wallet": "^1.0.1",
     "jest": "^26.6.3",
     "ts-jest": "^26.4.3",
     "typescript": "^3.9.7"
@@ -21,7 +20,8 @@
     "axios": "^0.21.0",
     "ethereumjs-abi": "^0.6.8",
     "ethereumjs-common": "^1.5.2",
-    "ethereumjs-tx": "^2.1.2"
+    "ethereumjs-tx": "^2.1.2",
+    "ethereumjs-wallet": "^1.0.1"
   },
   "typings": "./index.d.ts"
 }
