@@ -17,6 +17,8 @@ class BurnWeb {
         if (this._customCommon === null) {
             const blockchain = (await this.axios.get('api/blockchain')).data;
 
+            console.log(blockchain);
+
             this._customCommon = Common.forCustomChain(
                 'mainnet',
                 {
