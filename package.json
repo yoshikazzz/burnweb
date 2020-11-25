@@ -1,6 +1,7 @@
 {
   "name": "burnweb",
   "version": "0.1.0",
+  "main": "index.js",
   "scripts": {
     "build": "tsc",
     "test": "jest"
@@ -21,5 +22,6 @@
     "ethereumjs-abi": "^0.6.8",
     "ethereumjs-common": "^1.5.2",
     "ethereumjs-tx": "^2.1.2"
-  }
+  },
+  "typings": "./index.d.ts"
 }
