@@ -38,8 +38,7 @@ test('getTransaction', async () => {
         0,
         'https://s3.aws.com/11980234/219315.png',
         1,
-        0,
-        1234
+        0
     );
 
     const tx = await burnweb.getTransaction(txHash);
