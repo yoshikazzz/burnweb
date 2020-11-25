@@ -133,7 +133,7 @@ class BurnWeb {
   
         tx.sign(this.privateKey);
   
-        const signature = tx.v.toString('hex') + tx.r.toString('hex') + tx.s.toString('hex');
+        const signature = tx.v.toString('hex') + tx.r.toString('hex').padStart(64, '0') + tx.s.toString('hex').padStart(64, '0');
   
         return this.axios.post('api/token/create', {
             'token_id': tokenId,
@@ -178,7 +178,7 @@ class BurnWeb {
   
         tx.sign(this.privateKey);
   
-        const signature = tx.v.toString('hex') + tx.r.toString('hex') + tx.s.toString('hex');
+        const signature = tx.v.toString('hex') + tx.r.toString('hex').padStart(64, '0') + tx.s.toString('hex').padStart(64, '0');
   
         return this.axios.post('api/token/' + tokenId + '/transfer', {
             'to': target,
@@ -211,7 +211,7 @@ class BurnWeb {
   
         tx.sign(this.privateKey);
   
-        const signature = tx.v.toString('hex') + tx.r.toString('hex') + tx.s.toString('hex');
+        const signature = tx.v.toString('hex') + tx.r.toString('hex').padStart(64, '0') + tx.s.toString('hex').padStart(64, '0');
   
         return this.axios.post('api/token/' + tokenId + '/issue', {
             'to': target,
@@ -243,7 +243,7 @@ class BurnWeb {
   
         tx.sign(this.privateKey);
   
-        const signature = tx.v.toString('hex') + tx.r.toString('hex') + tx.s.toString('hex');
+        const signature = tx.v.toString('hex') + tx.r.toString('hex').padStart(64, '0') + tx.s.toString('hex').padStart(64, '0');
   
         return this.axios.post('api/token/' + tokenId + '/burn', {
             'value': amount,
@@ -276,7 +276,7 @@ class BurnWeb {
   
         tx.sign(this.privateKey);
   
-        const signature = tx.v.toString('hex') + tx.r.toString('hex') + tx.s.toString('hex');
+        const signature = tx.v.toString('hex') + tx.r.toString('hex').padStart(64, '0') + tx.s.toString('hex').padStart(64, '0');
   
         return this.axios.post('api/kvs/create', {
             'store_id': storeId,
@@ -314,7 +314,7 @@ class BurnWeb {
   
         tx.sign(this.privateKey);
   
-        const signature = tx.v.toString('hex') + tx.r.toString('hex') + tx.s.toString('hex');
+        const signature = tx.v.toString('hex') + tx.r.toString('hex').padStart(64, '0') + tx.s.toString('hex').padStart(64, '0');
   
         return this.axios.post('api/kvs/' + storeId + '/collections/' + collection, {
             'store_id': storeId,
@@ -356,7 +356,7 @@ class BurnWeb {
   
         tx.sign(this.privateKey);
   
-        const signature = tx.v.toString('hex') + tx.r.toString('hex') + tx.s.toString('hex');
+        const signature = tx.v.toString('hex') + tx.r.toString('hex').padStart(64, '0') + tx.s.toString('hex').padStart(64, '0');
   
         return this.axios.delete('api/kvs/' + storeId + '/collections/' + collection, {
             data: {
