@@ -6,7 +6,7 @@ import Wallet from 'ethereumjs-wallet';
 
 type BlockNumber = string | number;
 
-class BurnWeb {
+export class BurnWeb {
     private readonly axios: AxiosInstance;
 
     private readonly privateKey: Buffer;
@@ -31,7 +31,7 @@ class BurnWeb {
         return this._customCommon;
     }
 
-    constructor(url: string, privateKey: string | undefined) {
+    constructor(url: string, privateKey?: string) {
         this.axios = axios.create({
             baseURL: url,
             responseType: 'json'
@@ -372,5 +372,3 @@ class BurnWeb {
         });
     }
 }
-
-export = BurnWeb

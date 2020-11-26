@@ -1,6 +1,6 @@
 const { default: Wallet } = require('ethereumjs-wallet');
 
-const BurnWeb = require('../');
+const BurnWeb = require('../../');
 
 test('createStore', async () => {
     const burnweb = new BurnWeb('https://burn-network.io', 'c4d25b4def6bdf58cdacfff3b03a0304a9f2aa29d1357b5ae0ad28c54102898b');
