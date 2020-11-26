@@ -31,7 +31,7 @@ export class BurnWeb {
         return this._customCommon;
     }
 
-    constructor(url: string, privateKey: string | undefined) {
+    constructor(url: string, privateKey?: string) {
         this.axios = axios.create({
             baseURL: url,
             responseType: 'json'

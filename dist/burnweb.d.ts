@@ -4,7 +4,7 @@ export declare class BurnWeb {
     private readonly privateKey;
     private _customCommon;
     private getCustomCommon;
-    constructor(url: string, privateKey: string | undefined);
+    constructor(url: string, privateKey?: string);
     getBlockNumber(): Promise<number>;
     getBlock(blockHashOrBlockNumber: BlockNumber | string): Promise<number>;
     getBalance(address: string): Promise<string>;
