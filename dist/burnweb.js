@@ -35,7 +35,13 @@ class BurnWeb {
             return Promise.reject(error);
         });
         if (privateKey !== undefined) {
-            this.privateKey = Buffer.from(privateKey, 'hex');
+            if (!privateKey.startsWith('0x')) {
+                privateKey = '0x' + privateKey;
+            }
+            if (privateKey.length !== 66) {
+                throw new Error('Private key must be 32 bytes long');
+            }
+            this.privateKey = Buffer.from(privateKey.slice(2), 'hex');
         }
     }
     getCustomCommon() {
@@ -50,6 +56,26 @@ class BurnWeb {
             }
             return this._customCommon;
         });
+    }
+    static generateAccount() {
+        const wallet = ethereumjs_wallet_1.default.generate();
+        return {
+            address: wallet.getAddressString(),
+            privateKey: wallet.getPrivateKeyString()
+        };
+    }
+    static privateKeyToAccount(privateKey) {
+        if (!privateKey.startsWith('0x')) {
+            privateKey = '0x' + privateKey;
+        }
+        if (privateKey.length !== 66) {
+            throw new Error('Private key must be 32 bytes long');
+        }
+        const wallet = ethereumjs_wallet_1.default.fromPrivateKey(Buffer.from(privateKey.slice(2), 'hex'));
+        return {
+            address: wallet.getAddressString(),
+            privateKey: wallet.getPrivateKeyString()
+        };
     }
     getBlockNumber() {
         return this.axios.get('api/block_number').then((response) => {

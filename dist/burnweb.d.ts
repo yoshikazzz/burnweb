@@ -4,6 +4,14 @@ export declare class BurnWeb {
     private readonly privateKey;
     private _customCommon;
     private getCustomCommon;
+    static generateAccount(): {
+        address: string;
+        privateKey: string;
+    };
+    static privateKeyToAccount(privateKey: string): {
+        address: string;
+        privateKey: string;
+    };
     constructor(url: string, privateKey?: string);
     getBlockNumber(): Promise<number>;
     getBlock(blockHashOrBlockNumber: BlockNumber | string): Promise<number>;
