@@ -31,6 +31,32 @@ export class BurnWeb {
         return this._customCommon;
     }
 
+    public static generateAccount(): { address: string; privateKey: string } {
+        const wallet = Wallet.generate();
+
+        return {
+            address: wallet.getAddressString(),
+            privateKey: wallet.getPrivateKeyString()
+        };
+    }
+
+    public static privateKeyToAccount(privateKey: string): { address: string; privateKey: string } {
+        if (!privateKey.startsWith('0x')) {
+            privateKey = '0x' + privateKey;
+        }
+
+        if (privateKey.length !== 66) {
+            throw new Error('Private key must be 32 bytes long');
+        }
+
+        const wallet = Wallet.fromPrivateKey(Buffer.from(privateKey.slice(2), 'hex'));
+
+        return {
+            address: wallet.getAddressString(),
+            privateKey: wallet.getPrivateKeyString()
+        };
+    }
+
     constructor(url: string, privateKey?: string) {
         this.axios = axios.create({
             baseURL: url,
@@ -49,7 +75,15 @@ export class BurnWeb {
         });
 
         if (privateKey !== undefined) {
-            this.privateKey = Buffer.from(privateKey, 'hex');
+            if (!privateKey.startsWith('0x')) {
+                privateKey = '0x' + privateKey;
+            }
+
+            if (privateKey.length !== 66) {
+                throw new Error('Private key must be 32 bytes long');
+            }
+
+            this.privateKey = Buffer.from(privateKey.slice(2), 'hex');
         }
     }
 
