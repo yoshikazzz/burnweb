@@ -11,7 +11,10 @@ npm install git+https://github.com/{your_repository}/burnweb.git
 
 ### Usage
 ```js
+// For js
 var BurnWeb = require('burnweb');
+// For ts
+import BurnWeb from 'burnweb';
 
 // Set BURN endpoint URL to initialize
 var burnweb = new BurnWeb('http://localhost:8545');
