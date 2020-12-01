@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BurnWeb = void 0;
 const axios_1 = __importDefault(require("axios"));
 const ethereumjs_abi_1 = __importDefault(require("ethereumjs-abi"));
+const bn_js_1 = __importDefault(require("bn.js"));
 const ethereumjs_common_1 = __importDefault(require("ethereumjs-common"));
 const ethereumjs_tx_1 = require("ethereumjs-tx");
 const ethereumjs_wallet_1 = __importDefault(require("ethereumjs-wallet"));
@@ -109,11 +110,12 @@ class BurnWeb {
     }
     createToken(name, symbol, decimals, totalSupply, feeTokenId, txFee, txFeeRate, icon, mintable, burnable) {
         return __awaiter(this, void 0, void 0, function* () {
+            const totalSupplyBN = new bn_js_1.default(totalSupply);
             const data = ethereumjs_abi_1.default.rawEncode(['string', 'string', 'uint256', 'uint256', 'address', 'uint256', 'uint256', 'string', 'uint256', 'uint256'], [
                 name,
                 symbol,
                 decimals,
-                totalSupply,
+                totalSupplyBN,
                 feeTokenId,
                 txFee,
                 txFeeRate,
@@ -139,7 +141,7 @@ class BurnWeb {
                 'name': name,
                 'symbol': symbol,
                 'decimals': decimals,
-                'total_supply': totalSupply,
+                'total_supply': totalSupplyBN.toString(10),
                 'fee_token_id': feeTokenId,
                 'tx_fee': txFee,
                 'tx_fee_rate': txFeeRate,
@@ -158,7 +160,8 @@ class BurnWeb {
     }
     transferToken(tokenId, target, amount) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = ethereumjs_abi_1.default.rawEncode(['address', 'uint256'], [target, amount]);
+            const amountBN = new bn_js_1.default(amount);
+            const data = ethereumjs_abi_1.default.rawEncode(['address', 'uint256'], [target, amountBN]);
             const nonce = Date.now();
             const txParams = {
                 nonce: '0x' + nonce.toString(16),
@@ -173,7 +176,7 @@ class BurnWeb {
             const signature = tx.v.toString('hex') + tx.r.toString('hex').padStart(64, '0') + tx.s.toString('hex').padStart(64, '0');
             return this.axios.post('api/token/' + tokenId + '/transfer', {
                 'to': target,
-                'value': amount,
+                'value': amountBN.toString(10),
                 'nonce': nonce,
                 'signature': signature
             }).then((response) => {
@@ -183,7 +186,8 @@ class BurnWeb {
     }
     issueToken(tokenId, target, amount) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = ethereumjs_abi_1.default.rawEncode(['address', 'uint256'], [target, amount]);
+            const amountBN = new bn_js_1.default(amount);
+            const data = ethereumjs_abi_1.default.rawEncode(['address', 'uint256'], [target, amountBN]);
             const nonce = Date.now();
             const txParams = {
                 nonce: '0x' + nonce.toString(16),
@@ -198,7 +202,7 @@ class BurnWeb {
             const signature = tx.v.toString('hex') + tx.r.toString('hex').padStart(64, '0') + tx.s.toString('hex').padStart(64, '0');
             return this.axios.post('api/token/' + tokenId + '/issue', {
                 'to': target,
-                'value': amount,
+                'value': amountBN.toString(10),
                 'nonce': nonce,
                 'signature': signature
             }).then((response) => {
@@ -208,7 +212,8 @@ class BurnWeb {
     }
     burnToken(tokenId, amount) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = ethereumjs_abi_1.default.rawEncode(['uint256'], [amount]);
+            const amountBN = new bn_js_1.default(amount);
+            const data = ethereumjs_abi_1.default.rawEncode(['uint256'], [amountBN]);
             const nonce = Date.now();
             const txParams = {
                 nonce: '0x' + nonce.toString(16),
@@ -222,7 +227,7 @@ class BurnWeb {
             tx.sign(this.privateKey);
             const signature = tx.v.toString('hex') + tx.r.toString('hex').padStart(64, '0') + tx.s.toString('hex').padStart(64, '0');
             return this.axios.post('api/token/' + tokenId + '/burn', {
-                'value': amount,
+                'value': amountBN.toString(10),
                 'nonce': nonce,
                 'signature': signature
             }).then((response) => {
@@ -327,4 +332,5 @@ class BurnWeb {
     }
 }
 exports.BurnWeb = BurnWeb;
+BurnWeb.BN = bn_js_1.default;
 //# sourceMappingURL=burnweb.js.map

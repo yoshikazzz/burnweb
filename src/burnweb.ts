@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 import abi from 'ethereumjs-abi';
+import BN from 'bn.js';
 import Common from 'ethereumjs-common';
 import { Transaction } from 'ethereumjs-tx';
 import Wallet from 'ethereumjs-wallet';
@@ -7,6 +8,8 @@ import Wallet from 'ethereumjs-wallet';
 type BlockNumber = string | number;
 
 export class BurnWeb {
+    public static BN = BN;
+
     private readonly axios: AxiosInstance;
 
     private readonly privateKey: Buffer;
@@ -127,7 +130,7 @@ export class BurnWeb {
         name: string,
         symbol: string,
         decimals: number,
-        totalSupply: string,
+        totalSupply: number|string|BN,
         feeTokenId: string,
         txFee: number,
         txFeeRate: number,
@@ -135,13 +138,15 @@ export class BurnWeb {
         mintable: boolean,
         burnable: boolean
     ): Promise<{ txHash: string; tokenId: string }> {
+        const totalSupplyBN = new BN(totalSupply);
+
         const data = abi.rawEncode(
             [ 'string', 'string', 'uint256', 'uint256', 'address', 'uint256', 'uint256', 'string', 'uint256', 'uint256' ],
             [ 
                 name,
                 symbol,
                 decimals,
-                totalSupply,
+                totalSupplyBN,
                 feeTokenId,
                 txFee,
                 txFeeRate,
@@ -174,7 +179,7 @@ export class BurnWeb {
             'name': name,
             'symbol': symbol,
             'decimals': decimals,
-            'total_supply': totalSupply,
+            'total_supply': totalSupplyBN.toString(10),
             'fee_token_id': feeTokenId,
             'tx_fee': txFee,
             'tx_fee_rate': txFeeRate,
@@ -194,9 +199,11 @@ export class BurnWeb {
     async transferToken(
         tokenId: string,
         target: string,
-        amount: number
+        amount: number|string|BN
     ): Promise<string> {
-        const data = abi.rawEncode([ 'address', 'uint256' ], [ target, amount ]);
+        const amountBN = new BN(amount);
+
+        const data = abi.rawEncode([ 'address', 'uint256' ], [ target, amountBN ]);
         const nonce = Date.now();
 
         const txParams = {
@@ -216,7 +223,7 @@ export class BurnWeb {
   
         return this.axios.post('api/token/' + tokenId + '/transfer', {
             'to': target,
-            'value': amount,
+            'value': amountBN.toString(10),
             'nonce': nonce,
             'signature': signature
         }).then((response) => {
@@ -227,9 +234,11 @@ export class BurnWeb {
     async issueToken(
         tokenId: string,
         target: string,
-        amount: number
+        amount: number|string|BN
     ): Promise<string> {
-        const data = abi.rawEncode([ 'address', 'uint256' ], [ target, amount ]);
+        const amountBN = new BN(amount);
+
+        const data = abi.rawEncode([ 'address', 'uint256' ], [ target, amountBN ]);
         const nonce = Date.now();
 
         const txParams = {
@@ -249,7 +258,7 @@ export class BurnWeb {
   
         return this.axios.post('api/token/' + tokenId + '/issue', {
             'to': target,
-            'value': amount,
+            'value': amountBN.toString(10),
             'nonce': nonce,
             'signature': signature
         }).then((response) => {
@@ -259,9 +268,11 @@ export class BurnWeb {
 
     async burnToken(
         tokenId: string,
-        amount: number
+        amount: number|string|BN
     ): Promise<string> {
-        const data = abi.rawEncode([ 'uint256' ], [ amount ]);
+        const amountBN = new BN(amount);
+
+        const data = abi.rawEncode([ 'uint256' ], [ amountBN ]);
         const nonce = Date.now();
 
         const txParams = {
@@ -280,7 +291,7 @@ export class BurnWeb {
         const signature = tx.v.toString('hex') + tx.r.toString('hex').padStart(64, '0') + tx.s.toString('hex').padStart(64, '0');
   
         return this.axios.post('api/token/' + tokenId + '/burn', {
-            'value': amount,
+            'value': amountBN.toString(10),
             'nonce': nonce,
             'signature': signature
         }).then((response) => {

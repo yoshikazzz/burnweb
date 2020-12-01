@@ -1,5 +1,7 @@
+import BN from 'bn.js';
 declare type BlockNumber = string | number;
 export declare class BurnWeb {
+    static BN: typeof BN;
     private readonly axios;
     private readonly privateKey;
     private _customCommon;
@@ -19,13 +21,13 @@ export declare class BurnWeb {
     getBalanceOf(tokenId: string, address: string): Promise<string>;
     getTransaction(transactionHash: string): Promise<object>;
     getToken(tokenId: string): Promise<object>;
-    createToken(name: string, symbol: string, decimals: number, totalSupply: string, feeTokenId: string, txFee: number, txFeeRate: number, icon: string, mintable: boolean, burnable: boolean): Promise<{
+    createToken(name: string, symbol: string, decimals: number, totalSupply: number | string | BN, feeTokenId: string, txFee: number, txFeeRate: number, icon: string, mintable: boolean, burnable: boolean): Promise<{
         txHash: string;
         tokenId: string;
     }>;
-    transferToken(tokenId: string, target: string, amount: number): Promise<string>;
-    issueToken(tokenId: string, target: string, amount: number): Promise<string>;
-    burnToken(tokenId: string, amount: number): Promise<string>;
+    transferToken(tokenId: string, target: string, amount: number | string | BN): Promise<string>;
+    issueToken(tokenId: string, target: string, amount: number | string | BN): Promise<string>;
+    burnToken(tokenId: string, amount: number | string | BN): Promise<string>;
     createStore(name: string): Promise<{
         txHash: string;
         storeId: string;
