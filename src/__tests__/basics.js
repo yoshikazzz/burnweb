@@ -1,6 +1,6 @@
 const { default: Wallet } = require('ethereumjs-wallet');
 
-const BurnWeb = require('../../');
+const { BurnWeb } = require('../burnweb');
 
 test('setProvider', () => {
     const burnweb = new BurnWeb('https://burn-network.io');
@@ -32,7 +32,7 @@ test('getTransaction', async () => {
         'Name',
         'USDN',
         6,
-        20000000000000,
+        '20000000000000000000000000',
         '0x0000000000000000000000000000000000000000',
         0,
         0,
