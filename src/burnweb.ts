@@ -4,6 +4,7 @@ import BN from 'bn.js';
 import Common from 'ethereumjs-common';
 import { Transaction } from 'ethereumjs-tx';
 import Wallet from 'ethereumjs-wallet';
+import querystring from 'querystring';
 
 type BlockNumber = string | number;
 
@@ -296,6 +297,36 @@ export class BurnWeb {
             'signature': signature
         }).then((response) => {
             return response.data['tx_hash'];
+        });
+    }
+
+    async listTokenTransactions(
+        tokenId: string,
+        from?: string,
+        to?: string,
+        start?: Date,
+        end?: Date
+    ): Promise<object[]> {
+        const params = { };
+
+        if (from) {
+            params['from'] = from;
+        }
+
+        if (to) {
+            params['to'] = to;
+        }
+
+        if (start) {
+            params['start'] = start.toISOString().substr(0, 10) + ' ' + start.toISOString().substr(11, 8);
+        }
+
+        if (end) {
+            params['end'] = end.toISOString().substr(0, 10) + ' ' + end.toISOString().substr(11, 8);
+        }
+
+        return this.axios.get('api/token/' + tokenId + '/tx?' + querystring.stringify(params)).then((response) => {
+            return response.data;
         });
     }
 

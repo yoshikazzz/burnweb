@@ -19,6 +19,7 @@ const bn_js_1 = __importDefault(require("bn.js"));
 const ethereumjs_common_1 = __importDefault(require("ethereumjs-common"));
 const ethereumjs_tx_1 = require("ethereumjs-tx");
 const ethereumjs_wallet_1 = __importDefault(require("ethereumjs-wallet"));
+const querystring_1 = __importDefault(require("querystring"));
 class BurnWeb {
     constructor(url, privateKey) {
         this._customCommon = null;
@@ -232,6 +233,26 @@ class BurnWeb {
                 'signature': signature
             }).then((response) => {
                 return response.data['tx_hash'];
+            });
+        });
+    }
+    listTokenTransactions(tokenId, from, to, start, end) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const params = {};
+            if (from) {
+                params['from'] = from;
+            }
+            if (to) {
+                params['to'] = to;
+            }
+            if (start) {
+                params['start'] = start.toISOString().substr(0, 10) + ' ' + start.toISOString().substr(11, 8);
+            }
+            if (end) {
+                params['end'] = end.toISOString().substr(0, 10) + ' ' + end.toISOString().substr(11, 8);
+            }
+            return this.axios.get('api/token/' + tokenId + '/tx?' + querystring_1.default.stringify(params)).then((response) => {
+                return response.data;
             });
         });
     }
