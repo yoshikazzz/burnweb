@@ -135,3 +135,29 @@ test('getBalanceOf', async () => {
 
     expect(await burnweb.getBalanceOf(tokenId, '0x3a762D996BBB3633c653e1DCb0201663874Dc9E2')).toEqual('20000000000000000000000000');
 });
+
+test('listTokenTransactions', async () => {
+    const burnweb = new BurnWeb('https://burn-network.io', 'c4d25b4def6bdf58cdacfff3b03a0304a9f2aa29d1357b5ae0ad28c54102898b');
+
+    const { tokenId } = await burnweb.createToken(
+        'Name',
+        'USDN',
+        6,
+        '20000000000000000000000000',
+        '0x0000000000000000000000000000000000000000',
+        0,
+        0,
+        'https://s3.aws.com/11980234/219315.png',
+        1,
+        0
+    );
+
+    const target = Wallet.generate();
+
+    const txHash =  await burnweb.transferToken(tokenId, target.getAddressString(), '10000000000000000000000000');
+
+    const start = new Date(Date.now() - 3600 * 1000);
+    const end = new Date(Date.now() + 3600 * 1000);
+
+    expect((await burnweb.listTokenTransactions(tokenId, undefined, target.getAddressString(), start, end))[0]['tx_id']).toEqual(txHash);
+});

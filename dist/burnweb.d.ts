@@ -28,6 +28,7 @@ export declare class BurnWeb {
     transferToken(tokenId: string, target: string, amount: number | string | BN): Promise<string>;
     issueToken(tokenId: string, target: string, amount: number | string | BN): Promise<string>;
     burnToken(tokenId: string, amount: number | string | BN): Promise<string>;
+    listTokenTransactions(tokenId: string, from?: string, to?: string, start?: Date, end?: Date): Promise<object[]>;
     createStore(name: string): Promise<{
         txHash: string;
         storeId: string;
