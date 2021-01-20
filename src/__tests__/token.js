@@ -65,6 +65,16 @@ test('transferToken', async () => {
     expect(txHash).toMatch(/^0x[0-9a-f]{40}/);
 });
 
+test('transferToken native', async () => {
+    const burnweb = new BurnWeb('https://burn-network.io', 'c4d25b4def6bdf58cdacfff3b03a0304a9f2aa29d1357b5ae0ad28c54102898b');
+
+    const target = Wallet.generate();
+
+    const txHash =  await burnweb.transferToken('0x0000000000000000000000000000000000000000', target.getAddressString(), '1');
+
+    expect(txHash).toMatch(/^0x[0-9a-f]{40}/);
+});
+
 test('issueToken', async () => {
     const burnweb = new BurnWeb('https://burn-network.io', 'c4d25b4def6bdf58cdacfff3b03a0304a9f2aa29d1357b5ae0ad28c54102898b');
 
