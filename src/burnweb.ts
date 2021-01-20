@@ -204,17 +204,30 @@ export class BurnWeb {
     ): Promise<string> {
         const amountBN = new BN(amount);
 
-        const data = abi.rawEncode([ 'address', 'uint256' ], [ target, amountBN ]);
+        let txParams;
         const nonce = Date.now();
 
-        const txParams = {
-            nonce: '0x' + nonce.toString(16),
-            gasPrice: '0x0',
-            gasLimit: '0x0',
-            to: tokenId,
-            value: '0x0',
-            data: '0xa9059cbb' + data.toString('hex')
-        };
+        if (tokenId !== '0x0000000000000000000000000000000000000000') {
+            const data = abi.rawEncode([ 'address', 'uint256' ], [ target, amountBN ]);
+
+            txParams = {
+                nonce: '0x' + nonce.toString(16),
+                gasPrice: '0x0',
+                gasLimit: '0x0',
+                to: tokenId,
+                value: '0x0',
+                data: '0xa9059cbb' + data.toString('hex')
+            };
+        } else {
+            txParams = {
+                nonce: '0x' + nonce.toString(16),
+                gasPrice: '0x0',
+                gasLimit: '0x0',
+                to: target,
+                value: amountBN,
+                data: '0x'
+            };
+        }
 
         const tx = new Transaction(txParams, { common: await this.getCustomCommon() });
   
