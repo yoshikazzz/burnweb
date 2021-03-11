@@ -21,7 +21,7 @@ export declare class BurnWeb {
     getBalanceOf(tokenId: string, address: string): Promise<string>;
     getTransaction(transactionHash: string): Promise<object>;
     getToken(tokenId: string): Promise<object>;
-    createToken(name: string, symbol: string, decimals: number, totalSupply: number | string | BN, feeTokenId: string, txFee: number, txFeeRate: number, icon: string, mintable: boolean, burnable: boolean): Promise<{
+    createToken(name: string, symbol: string, decimals: number, totalSupply: number | string | BN, feeToken: number, txFee: number, txFeeRate: number, icon: string, mintable: boolean, burnable: boolean): Promise<{
         txHash: string;
         tokenId: string;
     }>;

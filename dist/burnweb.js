@@ -109,22 +109,22 @@ class BurnWeb {
             return response.data;
         });
     }
-    createToken(name, symbol, decimals, totalSupply, feeTokenId, txFee, txFeeRate, icon, mintable, burnable) {
+    createToken(name, symbol, decimals, totalSupply, feeToken, txFee, txFeeRate, icon, mintable, burnable) {
         return __awaiter(this, void 0, void 0, function* () {
             const totalSupplyBN = new bn_js_1.default(totalSupply);
+            const tokenId = ethereumjs_wallet_1.default.generate().getAddressString();
             const data = ethereumjs_abi_1.default.rawEncode(['string', 'string', 'uint256', 'uint256', 'address', 'uint256', 'uint256', 'string', 'uint256', 'uint256'], [
                 name,
                 symbol,
                 decimals,
                 totalSupplyBN,
-                feeTokenId,
+                feeToken ? tokenId : '0x0000000000000000000000000000000000000000',
                 txFee,
                 txFeeRate,
                 icon,
                 mintable,
                 burnable
             ]);
-            const tokenId = ethereumjs_wallet_1.default.generate().getAddressString();
             const nonce = Date.now();
             const txParams = {
                 nonce: '0x' + nonce.toString(16),
@@ -143,7 +143,7 @@ class BurnWeb {
                 'symbol': symbol,
                 'decimals': decimals,
                 'total_supply': totalSupplyBN.toString(10),
-                'fee_token_id': feeTokenId,
+                'fee_token_id': feeToken ? tokenId : '0x0000000000000000000000000000000000000000',
                 'tx_fee': txFee,
                 'tx_fee_rate': txFeeRate,
                 'icon': icon,
