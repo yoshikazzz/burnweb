@@ -132,7 +132,7 @@ export class BurnWeb {
         symbol: string,
         decimals: number,
         totalSupply: number|string|BN,
-        feeTokenId: string,
+        feeToken: number,
         txFee: number,
         txFeeRate: number,
         icon: string,
@@ -141,6 +141,8 @@ export class BurnWeb {
     ): Promise<{ txHash: string; tokenId: string }> {
         const totalSupplyBN = new BN(totalSupply);
 
+        const tokenId = Wallet.generate().getAddressString();
+
         const data = abi.rawEncode(
             [ 'string', 'string', 'uint256', 'uint256', 'address', 'uint256', 'uint256', 'string', 'uint256', 'uint256' ],
             [ 
@@ -148,7 +150,7 @@ export class BurnWeb {
                 symbol,
                 decimals,
                 totalSupplyBN,
-                feeTokenId,
+                feeToken ? tokenId : '0x0000000000000000000000000000000000000000',
                 txFee,
                 txFeeRate,
                 icon,
@@ -157,7 +159,6 @@ export class BurnWeb {
             ]
         );
 
-        const tokenId = Wallet.generate().getAddressString();
         const nonce = Date.now();
 
         const txParams = {
@@ -181,7 +182,7 @@ export class BurnWeb {
             'symbol': symbol,
             'decimals': decimals,
             'total_supply': totalSupplyBN.toString(10),
-            'fee_token_id': feeTokenId,
+            'fee_token_id': feeToken ? tokenId : '0x0000000000000000000000000000000000000000',
             'tx_fee': txFee,
             'tx_fee_rate': txFeeRate,
             'icon': icon,
