@@ -162,16 +162,29 @@ class BurnWeb {
     transferToken(tokenId, target, amount) {
         return __awaiter(this, void 0, void 0, function* () {
             const amountBN = new bn_js_1.default(amount);
-            const data = ethereumjs_abi_1.default.rawEncode(['address', 'uint256'], [target, amountBN]);
+            let txParams;
             const nonce = Date.now();
-            const txParams = {
-                nonce: '0x' + nonce.toString(16),
-                gasPrice: '0x0',
-                gasLimit: '0x0',
-                to: tokenId,
-                value: '0x0',
-                data: '0xa9059cbb' + data.toString('hex')
-            };
+            if (tokenId !== '0x0000000000000000000000000000000000000000') {
+                const data = ethereumjs_abi_1.default.rawEncode(['address', 'uint256'], [target, amountBN]);
+                txParams = {
+                    nonce: '0x' + nonce.toString(16),
+                    gasPrice: '0x0',
+                    gasLimit: '0x0',
+                    to: tokenId,
+                    value: '0x0',
+                    data: '0xa9059cbb' + data.toString('hex')
+                };
+            }
+            else {
+                txParams = {
+                    nonce: '0x' + nonce.toString(16),
+                    gasPrice: '0x0',
+                    gasLimit: '0x0',
+                    to: target,
+                    value: amountBN,
+                    data: '0x'
+                };
+            }
             const tx = new ethereumjs_tx_1.Transaction(txParams, { common: yield this.getCustomCommon() });
             tx.sign(this.privateKey);
             const signature = tx.v.toString('hex') + tx.r.toString('hex').padStart(64, '0') + tx.s.toString('hex').padStart(64, '0');
